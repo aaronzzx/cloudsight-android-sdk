@@ -1,4 +1,5 @@
 # CloudSight Android SDK
+[![](https://jitpack.io/v/cloudsight/cloudsight-android-sdk.svg)](https://jitpack.io/#cloudsight/cloudsight-android-sdk)
 
 CloudSight API SDK for Android.
 
@@ -31,8 +32,22 @@ To use the CloudSight Android SDK, add the compile dependency with the latest ve
 You will need to add the `android.permission.INTERNET` and `android.permission.READ_EXTERNAL_STORAGE` permissions in the Manifest of your Android project.
 
 ### Gradle
+To get a Git project into your build:
 
-ADD GRADLE DETAILS HERE
+#### Step 1. Add the JitPack repository to your build file
+Add it in your root build.gradle at the end of repositories:
+
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+#### Step 2. Add the dependency
+
+	dependencies {
+	        implementation 'com.github.cloudsight:cloudsight-android-sdk:Tag'
+	}
 
 ## Usage
 
