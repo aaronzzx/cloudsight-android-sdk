@@ -20,14 +20,9 @@ public class CloudSightClient {
     }
 
     private String locale = null;
-    private Boolean nsfw = null;
 
     public void setLocale(String locale){
         this.locale = locale;
-    }
-
-    public void setNsfw(Boolean nsfw){
-        this.nsfw = nsfw;
     }
 
 
@@ -106,6 +101,7 @@ public class CloudSightClient {
                     break;
                 case "not completed":
                     getInformationByToken(response.getToken(), callback);
+                    break;
             }
         } catch (IllegalArgumentException e) {
             callback.imageRecognitionFailed("Unhandled response status");
@@ -134,9 +130,6 @@ public class CloudSightClient {
 
         if (locale != null ) {
             requestMap.put("locale", RequestBody.create(MediaType.parse("text/plain"), locale));
-        }
-        if (nsfw != null){
-            requestMap.put("nsfw", RequestBody.create(MediaType.parse("text/plain"), nsfw.toString()));
         }
         return requestMap;
     }

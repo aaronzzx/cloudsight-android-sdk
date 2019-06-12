@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         //CloudSightClient client = new CloudSightClient().init("", "");
 
         client.setLocale("en-US");
-        client.setNsfw(true);
 
         client.getImageInformation(file, new CloudSightCallback() {
             @Override
