@@ -3,6 +3,8 @@ package ai.cloudsight.androidsdk;
 import androidx.annotation.NonNull;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -17,11 +19,17 @@ public class CloudSightClient {
         return ourInstance;
     }
 
-    // `locale` is optional - is there a way to make this an optional setting?
-    private String locale = "en-US";
+    private String locale = null;
+    private Boolean nsfw = null;
+
     public void setLocale(String locale){
         this.locale = locale;
     }
+
+    public void setNsfw(Boolean nsfw){
+        this.nsfw = nsfw;
+    }
+
 
     public CloudSightClient init(@NonNull String apiKey) {
         CloudSightClient.getInstance().cloudSightApi = NetworkService.getInstance(apiKey)
@@ -39,10 +47,9 @@ public class CloudSightClient {
 
     public void getImageInformation(File imageFile, final CloudSightCallback callback) {
 
-        RequestBody localeRequest = RequestBody.create(MediaType.parse("text/plain"), locale);
         RequestBody image = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile);
 
-        cloudSightApi.recognitionByImageFile(localeRequest, image)
+        cloudSightApi.recognitionByImageFile(getRequestParameters(), image)
                 .enqueue(new Callback<CloudSightResponse>() {
                     @Override
                     public void onResponse(Call<CloudSightResponse> call, Response<CloudSightResponse> response) {
@@ -62,13 +69,11 @@ public class CloudSightClient {
                 });
     }
 
-
     public void getImageInformation(String remoteImageUrl, final CloudSightCallback callback) {
 
-        RequestBody localeRequest = RequestBody.create(MediaType.parse("text/plain"), locale);
         RequestBody image = RequestBody.create(MediaType.parse("text/plain"), remoteImageUrl);
 
-        cloudSightApi.recognitionByRemoteImageUrl(localeRequest, image)
+        cloudSightApi.recognitionByRemoteImageUrl(getRequestParameters(), image)
                 .enqueue(new Callback<CloudSightResponse>() {
                     @Override
                     public void onResponse(Call<CloudSightResponse> call, Response<CloudSightResponse> response) {
@@ -88,18 +93,18 @@ public class CloudSightClient {
 
     private void checkResponse(CloudSightResponse response, final CloudSightCallback callback) {
         try {
-            switch (RecognitionStatus.valueOf(response.getStatus().toLowerCase())) {
-                case COMPLETED:
+            switch (response.getStatus()) {
+                case "completed":
                     callback.imageRecognized(response);
                     break;
-                case SKIPPED:
+                case "skipped":
                     callback.imageRecognitionFailed(response.getReason());
                     break;
-                case TIMEOUT:
-                case NOT_FOUND:
+                case "timeout":
+                case "not found":
                     callback.imageRecognitionFailed(response.getStatus());
                     break;
-                case NOT_COMPLETED:
+                case "not completed":
                     getInformationByToken(response.getToken(), callback);
             }
         } catch (IllegalArgumentException e) {
@@ -121,6 +126,19 @@ public class CloudSightClient {
                         callback.onFailure(t);
                     }
                 });
+    }
+
+
+    private Map<String, RequestBody> getRequestParameters() {
+        HashMap<String, RequestBody> requestMap = new HashMap<>();
+
+        if (locale != null ) {
+            requestMap.put("locale", RequestBody.create(MediaType.parse("text/plain"), locale));
+        }
+        if (nsfw != null){
+            requestMap.put("nsfw", RequestBody.create(MediaType.parse("text/plain"), nsfw.toString()));
+        }
+        return requestMap;
     }
 
 }

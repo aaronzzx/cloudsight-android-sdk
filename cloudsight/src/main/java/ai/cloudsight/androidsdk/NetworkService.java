@@ -9,27 +9,29 @@ import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+
 public class NetworkService {
 
-    private static final String CLOUDSIGHT_URL = "https://api.cloudsight.ai"; // Could this be some kind of 'configuration variable'?
-    private static NetworkService mInstance;
+    private static final String CLOUDSIGHT_URL = "https://api.cloudsight.ai";
+    private static ai.cloudsight.androidsdk.NetworkService mInstance;
     private Retrofit mRetrofit;
 
     private NetworkService(final String apiKey) {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.addInterceptor(new Interceptor() {
-                                      @Override
-                                      public Response intercept(Interceptor.Chain chain) throws IOException {
-                                          Request original = chain.request();
+            @Override
+            public Response intercept(Interceptor.Chain chain) throws IOException {
+                Request original = chain.request();
 
-                                          Request request = original.newBuilder()
-                                                  .addHeader("Authorization", "CloudSight " + apiKey)
-                                                  .method(original.method(), original.body())
-                                                  .build();
+                Request request = original.newBuilder()
+                        .header("User-Agent", android.os.Build.MODEL)
+                        .addHeader("Authorization", "CloudSight " + apiKey)
+                        .method(original.method(), original.body())
+                        .build();
 
-                                          return chain.proceed(request);
-                                      }
-                                  });
+                return chain.proceed(request);
+            }
+        });
 
         OkHttpClient client = httpClient.build();
 
@@ -53,16 +55,16 @@ public class NetworkService {
                 .build();
     }
 
-    public static NetworkService getInstance(String apiKey) {
+    public static ai.cloudsight.androidsdk.NetworkService getInstance(String apiKey) {
         if (mInstance == null) {
-            mInstance = new NetworkService(apiKey);
+            mInstance = new ai.cloudsight.androidsdk.NetworkService(apiKey);
         }
         return mInstance;
     }
 
-    public static NetworkService getInstance(String consumerKey, String consumerSecret) {
+    public static ai.cloudsight.androidsdk.NetworkService getInstance(String consumerKey, String consumerSecret) {
         if (mInstance == null) {
-            mInstance = new NetworkService(consumerKey, consumerSecret);
+            mInstance = new ai.cloudsight.androidsdk.NetworkService(consumerKey, consumerSecret);
         }
         return mInstance;
     }

@@ -28,6 +28,18 @@ public class CloudSightResponse {
     @SerializedName("flags")
     @Expose
     private List<String> flags = null;
+    @SerializedName("nsfw")
+    @Expose
+    private Boolean nsfw;
+    @SerializedName("categories")
+    @Expose
+    private List<String> categories = null;
+    @SerializedName("similar_objects")
+    @Expose
+    private List<String> similarObjects = null;
+    @SerializedName("structured_output")
+    @Expose
+    private StructuredOutput structuredOutput;
 
     public String getToken() {
         return token;
@@ -85,5 +97,62 @@ public class CloudSightResponse {
         this.flags = flags;
     }
 
+    public Boolean getNsfw() {
+        return nsfw;
+    }
 
+    public void setNsfw(Boolean nsfw) {
+        this.nsfw = nsfw;
+    }
+
+    public List<String> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
+    }
+
+    public List<String> getSimilarObjects() {
+        return similarObjects;
+    }
+
+    public void setSimilarObjects(List<String> similarObjects) {
+        this.similarObjects = similarObjects;
+    }
+
+    public StructuredOutput getStructuredOutput() {
+        return structuredOutput;
+    }
+
+    public void setStructuredOutput(StructuredOutput structuredOutput) {
+        this.structuredOutput = structuredOutput;
+    }
+
+    public class StructuredOutput {
+
+        @SerializedName("quantity")
+        @Expose
+        private List<String> quantity = null;
+        @SerializedName("color")
+        @Expose
+        private List<String> color = null;
+
+        public List<String> getQuantity() {
+            return quantity;
+        }
+
+        public void setQuantity(List<String> quantity) {
+            this.quantity = quantity;
+        }
+
+        public List<String> getColor() {
+            return color;
+        }
+
+        public void setColor(List<String> color) {
+            this.color = color;
+        }
+
+    }
 }
